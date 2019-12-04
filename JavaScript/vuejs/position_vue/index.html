@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>Vue.js App</title>
+    <link href="main.css" rel="stylesheet" />
+    <link href="https://unpkg.com/buefy/dist/buefy.min.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <img id="cat_position" src="cat.png" />
+    <div id="app">
+      <!-- この#appの内側にテンプレートを書き込んでいく -->
+      <form method="post" action="example.cgi">
+        <p>X：<input id="x" type="text" name="name" /></p>
+        <p>Y：<input id="y" type="text" name="name" /></p>
+        <p><input type="submit" value="送信する" /></p>
+      </form>
+      ============================================================================
+      <img src="cat.png" @click="getXY" />
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script src="https://unpkg.com/buefy/dist/buefy.min.js"></script>
+    <script src="main.js"></script>
+    <script>
+      document
+        .getElementById("cat_position")
+        .addEventListener("click", function(event) {
+          console.log(event);
+
+          let clickX = event.pageX;
+          let clickY = event.pageY;
+
+          // 要素の位置を取得
+          let clientRect = this.getBoundingClientRect();
+          let positionX = clientRect.left + window.pageXOffset;
+          let positionY = clientRect.top + window.pageYOffset;
+
+          let x = clickX - positionX;
+          let y = clickY - positionY;
+          console.log("x:" + x + ", y:" + y);
+        });
+    </script>
+  </body>
+</html>
