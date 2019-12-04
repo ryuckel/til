@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<meta charset="UTF-8" />
+<script
+  type="text/javascript"
+  src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"
+></script>
+<script type="text/javascript" src="index.js"></script>
+<link rel="stylesheet" type="text/css" href="index.css" />
+<html lang="ja">
+  <div id="app">
+    <div>
+      <span>Id：</span>
+      <select v-model="selectId">
+        <option v-for="id in ids" v-bind:value="id">{{ id }}</option>
+      </select>
+    </div>
+    <div>
+      <span>Age：</span>
+      <span v-for="age in ages">
+        <input type="checkbox" v-bind:value="age" v-model="selectAges" />{{
+          age
+        }}
+      </span>
+    </div>
+    <div>
+      <span>Name：</span>
+      <input type="text" v-model="searchName" placeholder="Search" />
+    </div>
+    <div>
+      <span><button @click="resetting()">元に戻す</button></span>
+    </div>
+    <div>
+      <table>
+        <thead>
+          <tr>
+            <th @click="sortBy('Id')" :class="sortedClass('Id')">Id</th>
+            <th @click="sortBy('Name')" :class="sortedClass('Name')">Name</th>
+            <th @click="sortBy('Age')" :class="sortedClass('Age')">Age</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr v-for="row in eventedAction">
+            <td>{{ row.Id }}</td>
+            <td>{{ row.Name }}</td>
+            <td>{{ row.Age }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</html>

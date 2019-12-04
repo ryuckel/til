@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<meta charset="UTF-8" />
+<html lang="ja">
+  <head>
+    <style>
+      body {
+        font-family: Helvetica Neue, Arial, sans-serif;
+        font-size: 14px;
+        color: #444;
+      }
+
+      table {
+        border: 2px solid #42b983;
+        border-radius: 3px;
+        background-color: #fff;
+      }
+
+      th {
+        background-color: #42b983;
+        color: rgba(255, 255, 255, 0.66);
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      td {
+        background-color: #f9f9f9;
+      }
+
+      th,
+      td {
+        min-width: 120px;
+        padding: 10px 20px;
+      }
+
+      th.active {
+        color: #fff;
+      }
+
+      th.active .arrow {
+        opacity: 1;
+      }
+
+      .arrow {
+        display: inline-block;
+        vertical-align: middle;
+        width: 0;
+        height: 0;
+        margin-left: 5px;
+        opacity: 0.66;
+      }
+
+      .arrow.asc {
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-bottom: 4px solid #fff;
+      }
+
+      .arrow.dsc {
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-top: 4px solid #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <table>
+        <thead>
+          <tr>
+            <th v-for="(value, key) in columns" @click="sortBy(key)">
+              {{ value }}
+              <span
+                class="arrow"
+                :class="sortOrders[key] > 0 ? 'asc' : 'dsc'"
+              ></span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="task in filteredTasks">
+            <td v-for="(value, key) in columns">
+              {{ task[key] }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13"></script>
+    <script>
+      Vue.config.devtools = true;
+
+      var vm = new Vue({
+        el: "#app",
+        data: function() {
+          var columns = { id: "ID", name: "名前", age: "年齢" };
+          var sortOrders = {};
+          Object.keys(columns).forEach(function(key) {
+            sortOrders[key] = 1;
+          });
+
+          return {
+            columns: columns,
+            tasks: [
+              { id: 1, name: "test", age: 37 },
+              { id: 2, name: "test2", age: 27 },
+              { id: 3, name: "test3", age: 21 },
+              { id: 4, name: "test4", age: 54 },
+              { id: 5, name: "test5", age: 97 }
+            ],
+            sortKey: "",
+            sortOrders: sortOrders
+          };
+        },
+        methods: {
+          sortBy: function(key) {
+            this.sortKey = key;
+            this.sortOrders[key] = this.sortOrders[key] * -1;
+          }
+        },
+        computed: {
+          filteredTasks: function() {
+            var data = this.tasks;
+
+            var sortKey = this.sortKey;
+            var order = this.sortOrders[sortKey] || 1;
+
+            if (sortKey) {
+              data = data.slice().sort(function(a, b) {
+                a = a[sortKey];
+                b = b[sortKey];
+                return (a === b ? 0 : a > b ? 1 : -1) * order;
+              });
+            }
+            return data;
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
