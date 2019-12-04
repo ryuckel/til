@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>Vue.js App</title>
+    <link href="main.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <h1>Weather Forcast</h1>
+    <div id="app" class="weather_box">
+      <form>
+        <input type="text" v-model="zip_code" placeholder="enter zip code" />
+        <div @click="zipcodeInput">submit</div>
+      </form>
+      <div v-if="city" class="weather_info">
+        <p class="weather_city">{{ city }}</p>
+        <p class="weather_condition">{{ condition.main }}</p>
+        <p class="weather_temp">最高気温{{ max_temp | roundUp }}&deg;C</p>
+        <p class="weather_temp">最低気温{{ min_temp | roundUp }}&deg;C</p>
+      </div>
+      <p v-if="condition.main == 'Rain'">
+        <img src="img/rain.jpg" alt="Rainy" />
+      </p>
+      <p v-else-if="condition.main == 'Clouds'">
+        <img src="img/cloudy.jpg" alt="Cloudy" />
+      </p>
+      <p v-else-if="condition.main == 'Clear'">
+        <img src="img/sunny.jpg" alt="Sunny" />
+      </p>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>

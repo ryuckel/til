@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>Vue.js App</title>
+    <link href="main.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div id="app">
+      <div>
+        <span>Name：</span>
+        <input type="text" v-model="searchName" placeholder="セッション名" />
+      </div>
+      <div class="container">
+        <span><button @click="resetting()">元に戻す</button></span>
+      </div>
+      <div>
+        <table class="container">
+          <thead>
+            <tr>
+              <th @click="sortBy('Id')" :class="sortedClass('Id')">ID</th>
+              <th @click="sortBy('Name')" :class="sortedClass('Name')">Name</th>
+              <th @click="sortBy('Age')" :class="sortedClass('Age')">Age</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr v-for="row in eventedAction">
+              <td>{{ row.Id }}</td>
+              <td>{{ row.Name }}</td>
+              <td>{{ row.Age }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>

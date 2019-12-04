@@ -1,0 +1,14 @@
+html,
+body {
+  margin: 5px;
+  padding: 0;
+}
+
+.itemContainer {
+  display: flex;
+}
+
+.item {
+  border: solid;
+  margin: 15px;
+}
