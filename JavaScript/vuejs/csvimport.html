@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>csvファイル検索ツール</title>
+<style>
+h1{font-size: 16px;display:inline;}
+p{display:inline;}
+input[type=number]{width:80px;}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/encoding-japanese/1.0.30/encoding.js"></script>
+</head>
+<body>
+<div id="app">
+   <h1>csvファイル 検索ツール（簡易オートフィルタ）</h1>
+   <input type="file" @change="fileChange">
+   <p>列幅調整はセル内でBackspace,←,→キー</p>
+   <hr>
+   検索文字:<input type="text" id="filter1">and<input type="text" id="filter2">
+   行:<input type="number" id="maxGyou" step="10" min="10" value="30">
+   <input type="button" @click="filterFn" value="抽出">
+   ページ:
+   <select v-model="index">
+     <option v-for="n in pageLength" v-bind:value="n">{{n}} </option>
+   </select> /{{ (pageLength==100)?"over": pageLength}}
+   <input type="button" value="←" @click="plus(-1)">
+   <input type="button" value="→" @click="plus(1)">
+   一致数：{{ matchNum }}
+   <hr>
+   <div v-for="n in gyouNum" style="white-space: nowrap;">
+      <input type="text" v-for="(v,i) in csvData[(index-1)*gyouNum + (n-1)]" :value="v" 
+      @keyup.left="css(i,-25)" @keyup.right="css(i,50)" @keyup.delete="css(i,-1000)" 
+      :style="{color : (colorArr[i] || 'black'), width: (widthArr[i] || 150) + 'px' }" readonly="readonly">
+   </div>
+</div>
+<script>
+var vm = new Vue({
+   el: '#app',
+   data: {
+      index: 1,
+      gyouNum: 30,
+      fileData: [],
+      csvData: [],
+      widthArr: [],
+      colorArr: [],
+      matchNum: 0,
+   },
+   computed: {
+      pageLength: function() {
+         return Math.ceil(this.csvData.length / this.gyouNum);
+      },
+   },
+   methods: {
+      fileChange: function(e) {
+         $("#filter1,#filter2").val("");
+         var file = e.target.files[0];
+         var reader = new FileReader();
+         reader.onload = function(e) {
+            var codes = new Uint8Array(e.target.result);
+            var encoding = Encoding.detect(codes);
+            var unicodeString = Encoding.convert(codes, {
+               to: 'unicode',
+               from: encoding,
+               type: 'string'
+            });
+            var arr = unicodeString.trim().replace(/\"/g, "").split("\n");
+            vm.fileData = arr.map(v => v.split(","));
+            vm.filterFn();
+         };
+         reader.readAsArrayBuffer(file);
+      },
+      plus: function(x) {
+         if (this.index + x <= 0 || this.index + x > this.pageLength) return;
+         this.index += x;
+      },
+      css: function(x, y) {
+         this.widthArr[x] = this.widthArr[x] || 150;
+         this.widthArr[x] += y;
+         if (this.widthArr[x] < 15) {
+            this.widthArr[x] = 10;
+            this.colorArr[x] = "white";
+         } else {
+            this.colorArr[x] = "black";
+         }
+         this.colorArr.push();
+         this.widthArr.push();
+      },
+      filterFn: function() {
+         this.index = 1;
+         this.gyouNum = $("#maxGyou").val() - 0;
+         var filter1 = $("#filter1").val().toLowerCase();
+         var filter2 = $("#filter2").val().toLowerCase();
+         var arr = this.fileData.filter(function(v) {
+            return v.join("").toLowerCase().indexOf(filter1) > -1;
+         }).filter(function(v, i) {
+            return v.join("").toLowerCase().indexOf(filter2) > -1;
+         });
+         this.matchNum = arr.length;
+         this.csvData = arr.filter(function(v, i) {
+            return i < vm.gyouNum * 100;
+         });
+      },
+   },
+});
+</script>
+</body>
+</html>
