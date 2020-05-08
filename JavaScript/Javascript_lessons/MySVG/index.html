@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <title>SVG (Scalable Vector Graphics)</title>
+</head>
+
+<body>
+    <svg width="160" height="160">
+        <defs>
+            <style>
+                @keyframes text-move {
+                    0% {
+                        stroke-dashoffset: 300;
+                        fill: none;
+                    }
+
+                    90% {
+                        fill: skyblue;
+                    }
+
+                    100% {
+                        stroke-dashoffset: 0;
+                        fill: #fff;
+                    }
+                }
+
+                .my-text {
+                    font-size: 72px;
+                    font-weight: bold;
+                    font-family: Arial;
+                    fill: #fff;
+                    stroke: #fff;
+                    animation: text-move 3s ease-out;
+                    stroke-dasharray: 300;
+                    transition: .3s ease-out;
+                    cursor: pointer;
+                }
+
+                .my-text.moved {
+                    transform: translateX(160px);
+                }
+            </style>
+        </defs>
+        <rect x="0" y="0" width="160" height="160" fill="skyblue" />
+        <text x="5" y="150" id="target" class="my-text">
+            Hi
+        </text>
+    </svg>
+    <script>
+        (function () {
+            'use strict';
+
+            document.getElementById('target').addEventListener('click', function () {
+                // this.setAttribute('class', 'my-text moved');
+                this.classList.add('moved');
+            });
+        })();
+    </script>
+</body>
+
+</html>
